@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
+import ProductCarousel from '@/components/ProductCarousel';
 import TextReveal from '@/components/TextReveal';
 
 interface Product {
@@ -27,8 +28,15 @@ export default function Collections() {
       .catch(() => {});
   }, []);
 
-  const streetProducts = products.filter(p => p.collection === 'street-collection').slice(0, 3);
-  const rideProducts = products.filter(p => p.collection === 'ride-collection').slice(0, 3);
+  const streetProducts = products.filter(p => p.collection === 'street-collection').slice(0, 4);
+  let rideProducts = products.filter(p => p.collection === 'ride-collection').slice(0, 4);
+  if (rideProducts.length > 0 && rideProducts.length < 4) {
+    // Rellenar con el primer producto hasta llegar a 4
+    rideProducts = [
+      ...rideProducts,
+      ...Array(4 - rideProducts.length).fill(rideProducts[0])
+    ];
+  }
 
   return (
     <>
@@ -38,14 +46,12 @@ export default function Collections() {
           <TextReveal as="h2" className="collection-title">Street Collection</TextReveal>
           <Link href="/shop?collection=street-collection" className="btn btn-outline btn-viewall">View All</Link>
         </div>
-        <div className="container">
-          <div className="product-grid-3 reveal-stagger">
-            {streetProducts.map(p => (
-              <ProductCard key={p.id} id={p.id} name={p.name} slug={p.slug} price={p.price}
-                originalPrice={p.original_price} badge={p.badge} images={p.images} colors={p.colors} />
-            ))}
-          </div>
-        </div>
+        <ProductCarousel>
+          {streetProducts.map(p => (
+            <ProductCard key={p.id} id={p.id} name={p.name} slug={p.slug} price={p.price}
+              originalPrice={p.original_price} badge={p.badge} images={p.images} colors={p.colors} />
+          ))}
+        </ProductCarousel>
       </section>
 
       {/* Ride Collection */}
@@ -54,14 +60,12 @@ export default function Collections() {
           <TextReveal as="h2" className="collection-title">Ride Collection</TextReveal>
           <Link href="/shop?collection=ride-collection" className="btn btn-outline btn-viewall">View All</Link>
         </div>
-        <div className="container">
-          <div className="product-grid-3 reveal-stagger">
-            {rideProducts.map(p => (
-              <ProductCard key={p.id} id={p.id} name={p.name} slug={p.slug} price={p.price}
-                originalPrice={p.original_price} badge={p.badge} images={p.images} colors={p.colors} />
-            ))}
-          </div>
-        </div>
+        <ProductCarousel>
+          {rideProducts.map(p => (
+            <ProductCard key={p.id} id={p.id} name={p.name} slug={p.slug} price={p.price}
+              originalPrice={p.original_price} badge={p.badge} images={p.images} colors={p.colors} />
+          ))}
+        </ProductCarousel>
       </section>
 
       {/* Featured Banner */}
