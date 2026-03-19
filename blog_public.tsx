@@ -1,23 +1,13 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import BlogGrid from './BlogGrid';
-import getDb from '@/lib/db';
 
 export const metadata: Metadata = {
   title: 'Blog — SEVENTHWEAR',
   description: 'Noticias, cultura streetwear & ridewear, y novedades de SEVENTHWEAR.',
 };
 
-interface Post {
-  slug: string;
-  title: string;
-  excerpt: string;
-  cover_image: string;
-  published_at: string;
-  category: string;
-}
-
-const STATIC_POSTS = [
+const posts = [
   {
     slug: 'streetridewear-la-fusion',
     title: 'StreetRideWear: La fusión que define una generación',
@@ -44,45 +34,7 @@ const STATIC_POSTS = [
   },
 ];
 
-function formatDate(dateStr: string): string {
-  try {
-    return new Date(dateStr.replace(' ', 'T')).toLocaleDateString('es-ES', {
-      day: 'numeric', month: 'short', year: 'numeric',
-    });
-  } catch {
-    return dateStr;
-  }
-}
-
 export default function BlogPage() {
-  // Fetch posts from DB
-  let dbPosts: { slug: string; title: string; excerpt: string; image: string; date: string; category: string }[] = [];
-  try {
-    const db = getDb();
-    const rows = db.prepare(`
-      SELECT slug, title, excerpt, cover_image, published_at, category
-      FROM cms_posts
-      WHERE status = 'published'
-      ORDER BY published_at DESC
-    `).all() as Post[];
-
-    dbPosts = rows.map(p => ({
-      slug: p.slug,
-      title: p.title,
-      excerpt: p.excerpt,
-      image: p.cover_image || '/img/seventhwear_brand_2.jpg',
-      date: p.published_at ? formatDate(p.published_at) : '',
-      category: p.category || 'Blog',
-    }));
-  } catch {
-    // DB not ready, use static posts
-  }
-
-  // Merge: DB posts first, then static posts (avoid duplicates by slug)
-  const dbSlugs = new Set(dbPosts.map(p => p.slug));
-  const staticFiltered = STATIC_POSTS.filter(p => !dbSlugs.has(p.slug));
-  const allPosts = [...dbPosts, ...staticFiltered];
-
   return (
     <>
       <div className="page-header">
@@ -91,7 +43,7 @@ export default function BlogPage() {
       </div>
 
       <div className="container" style={{ padding: '60px 0' }}>
-        <BlogGrid posts={allPosts} />
+        <BlogGrid posts={posts} />
 
         <div style={{ textAlign: 'center', marginTop: '60px', padding: '40px 0', borderTop: '1px solid var(--color-border)' }} className="reveal">
           <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>Más contenido próximamente</p>

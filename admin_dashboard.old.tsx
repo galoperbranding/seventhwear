@@ -88,7 +88,7 @@ function RevenueChart({ data }: { data: MonthData[] }) {
           <div key={i} className="crm-chart-col">
             <div className="crm-chart-bar-wrap">
               <div className="crm-chart-bar" style={{ height: `${(d.total / max) * 100}%` }}
-                title={`S/${d.total.toFixed(2)} — ${d.orders} pedidos`} />
+                title={`€${d.total.toFixed(2)} — ${d.orders} pedidos`} />
             </div>
             <span className="crm-chart-label">{monthNames[d.month.split('-')[1]] || d.month}</span>
           </div>
@@ -195,7 +195,7 @@ export default function AdminDashboard() {
           {data.today.count > 0 && (
             <div className="crm-today-bar">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span>Hoy: <strong>{data.today.count} pedido{data.today.count !== 1 ? 's' : ''}</strong> por <strong>S/{data.today.revenue.toFixed(2)}</strong></span>
+              <span>Hoy: <strong>{data.today.count} pedido{data.today.count !== 1 ? 's' : ''}</strong> por <strong>€{data.today.revenue.toFixed(2)}</strong></span>
             </div>
           )}
 
@@ -208,8 +208,8 @@ export default function AdminDashboard() {
                   {revenueTrend.direction !== 'flat' && <>{revenueTrend.direction === 'up' ? '↑' : '↓'} {revenueTrend.value.toFixed(1)}%</>}
                 </div>
               </div>
-              <div className="crm-kpi-value">S/{data.stats.totalRevenue.toLocaleString('es-ES', { minimumFractionDigits: 2 })}</div>
-              <div className="crm-kpi-sub">Este mes: S/{data.trends.thisMonth.revenue.toFixed(2)}</div>
+              <div className="crm-kpi-value">€{data.stats.totalRevenue.toLocaleString('es-ES', { minimumFractionDigits: 2 })}</div>
+              <div className="crm-kpi-sub">Este mes: €{data.trends.thisMonth.revenue.toFixed(2)}</div>
               {data.charts.revenueLast7Days.length > 0 && <MiniChart data={data.charts.revenueLast7Days.map(d => d.total)} />}
             </div>
 
@@ -240,7 +240,7 @@ export default function AdminDashboard() {
               <div className="crm-kpi-header">
                 <span className="crm-kpi-label">Ticket medio</span>
               </div>
-              <div className="crm-kpi-value">S/{data.stats.avgOrderValue.toFixed(2)}</div>
+              <div className="crm-kpi-value">€{data.stats.avgOrderValue.toFixed(2)}</div>
               <div className="crm-kpi-sub">Conversión: {data.stats.conversionRate.toFixed(1)}%</div>
             </div>
           </div>
@@ -288,7 +288,7 @@ export default function AdminDashboard() {
                         <span className="crm-top-product-name">{p.name}</span>
                         <span className="crm-top-product-units">{p.units_sold} uds.</span>
                       </div>
-                      <span className="crm-top-product-revenue">S/{p.revenue.toFixed(2)}</span>
+                      <span className="crm-top-product-revenue">€{p.revenue.toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
@@ -311,7 +311,7 @@ export default function AdminDashboard() {
                         <span className="crm-recent-order-name">{order.first_name} {order.last_name}</span>
                       </div>
                       <span className={`crm-badge crm-badge-${order.status}`}>{statusLabels[order.status] || order.status}</span>
-                      <span className="crm-recent-order-amount">S/{order.total.toFixed(2)}</span>
+                      <span className="crm-recent-order-amount">€{order.total.toFixed(2)}</span>
                     </div>
                   ))}
                 </div>

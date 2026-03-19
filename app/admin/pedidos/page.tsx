@@ -168,7 +168,7 @@ export default function AdminOrdersPage() {
                       </span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <span style={{ fontWeight: 600, fontSize: '1.1rem' }}>€{order.total.toFixed(2)}</span>
+                      <span style={{ fontWeight: 600, fontSize: '1.1rem' }}>S/{order.total.toFixed(2)}</span>
                       <span style={{ opacity: 0.4, fontSize: '1.2rem', transition: 'transform 0.2s', transform: isExpanded ? 'rotate(180deg)' : 'rotate(0)' }}>▼</span>
                     </div>
                   </div>
@@ -199,9 +199,9 @@ export default function AdminOrdersPage() {
                         {/* Payment */}
                         <div>
                           <p style={{ opacity: 0.5, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>Pago</p>
-                          <p>Subtotal: €{order.subtotal?.toFixed(2)}</p>
-                          <p>Envío: €{order.shipping_cost?.toFixed(2)}</p>
-                          <p style={{ fontWeight: 600 }}>Total: €{order.total.toFixed(2)}</p>
+                          <p>Subtotal: S/{order.subtotal?.toFixed(2)}</p>
+                          <p>Envío: S/{order.shipping_cost?.toFixed(2)}</p>
+                          <p style={{ fontWeight: 600 }}>Total: S/{order.total.toFixed(2)}</p>
                           <p style={{ opacity: 0.6, marginTop: '0.25rem' }}>PayPal — {order.payment_status}</p>
                         </div>
                       </div>
@@ -220,7 +220,7 @@ export default function AdminOrdersPage() {
                                   <p style={{ fontSize: '0.9rem', fontWeight: 500 }}>{item.product_name}</p>
                                   <p style={{ fontSize: '0.8rem', opacity: 0.5 }}>Talla: {item.size}{item.color ? ` — Color: ${item.color}` : ''} — Cant: {item.quantity}</p>
                                 </div>
-                                <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>€{item.total_price.toFixed(2)}</span>
+                                <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>S/{item.total_price.toFixed(2)}</span>
                               </div>
                             ))}
                           </div>

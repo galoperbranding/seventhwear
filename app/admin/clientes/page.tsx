@@ -351,7 +351,7 @@ export default function CRMClientesPage() {
                       </div>
                     </td>
                     <td><span className="crm-cell-number">{c.order_count}</span></td>
-                    <td><span className="crm-cell-money">€{c.total_spent.toFixed(2)}</span></td>
+                    <td><span className="crm-cell-money">S/{c.total_spent.toFixed(2)}</span></td>
                     <td className="crm-cell-date">{c.last_order_date ? new Date(c.last_order_date).toLocaleDateString('es-ES') : '—'}</td>
                     <td>
                       <div className="crm-tags-cell">

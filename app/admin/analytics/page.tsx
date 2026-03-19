@@ -144,7 +144,7 @@ export default function AnalyticsPage() {
           <div className="ai-kpi-row">
             <div className="ai-kpi">
               <span className="ai-kpi-label">CLV Promedio</span>
-              <span className="ai-kpi-value">€{data.summary.avgClv.toFixed(2)}</span>
+              <span className="ai-kpi-value">S/{data.summary.avgClv.toFixed(2)}</span>
               <span className="ai-kpi-sub">Valor de vida estimado a 2.5 años</span>
             </div>
             <div className="ai-kpi">
@@ -159,8 +159,8 @@ export default function AnalyticsPage() {
             </div>
             <div className="ai-kpi">
               <span className="ai-kpi-label">Ticket medio</span>
-              <span className="ai-kpi-value">€{data.summary.avgOrderValue.toFixed(2)}</span>
-              <span className="ai-kpi-sub">Ingresos totales: €{data.summary.totalRevenue.toFixed(2)}</span>
+              <span className="ai-kpi-value">S/{data.summary.avgOrderValue.toFixed(2)}</span>
+              <span className="ai-kpi-sub">Ingresos totales: S/{data.summary.totalRevenue.toFixed(2)}</span>
             </div>
           </div>
 
@@ -247,9 +247,9 @@ export default function AnalyticsPage() {
                     <span className="ai-clv-rank">#{i + 1}</span>
                     <div className="ai-clv-info">
                       <span className="ai-clv-name">{c.name}</span>
-                      <span className="ai-clv-meta">{c.orderCount} pedidos · €{c.totalSpent.toFixed(2)} gastados · {c.segment}</span>
+                      <span className="ai-clv-meta">{c.orderCount} pedidos · S/{c.totalSpent.toFixed(2)} gastados · {c.segment}</span>
                     </div>
-                    <span className="ai-clv-value">€{c.clv.toFixed(2)}</span>
+                    <span className="ai-clv-value">S/{c.clv.toFixed(2)}</span>
                   </Link>
                 ))}
               </div>
@@ -298,10 +298,10 @@ export default function AnalyticsPage() {
                       <div key={i} className="ai-monthly-col">
                         <div className="ai-monthly-bar-wrap">
                           <div className="ai-monthly-bar" style={{ height: `${(m.revenue / maxRev) * 100}%` }}
-                            title={`€${m.revenue.toFixed(2)} — ${m.orders} pedidos — ${m.active_customers} clientes`} />
+                            title={`S/${m.revenue.toFixed(2)} — ${m.orders} pedidos — ${m.active_customers} clientes`} />
                         </div>
                         <span className="ai-monthly-label">{monthNames[m.month.split('-')[1]] || m.month}</span>
-                        <span className="ai-monthly-val">€{m.revenue >= 1000 ? `${(m.revenue / 1000).toFixed(1)}k` : m.revenue.toFixed(0)}</span>
+                        <span className="ai-monthly-val">S/{m.revenue >= 1000 ? `${(m.revenue / 1000).toFixed(1)}k` : m.revenue.toFixed(0)}</span>
                       </div>
                     ));
                   })()}
@@ -328,7 +328,7 @@ export default function AnalyticsPage() {
                         </div>
                         <div className="ai-cat-stats">
                           <span>{cat.unique_buyers} compradores</span>
-                          <span>€{cat.total_revenue.toFixed(0)}</span>
+                          <span>S/{cat.total_revenue.toFixed(0)}</span>
                         </div>
                       </div>
                     );
@@ -398,8 +398,8 @@ export default function AnalyticsPage() {
                     <td><span className={`ai-rfm-score ai-rfm-${c.f >= 4 ? 'high' : c.f >= 3 ? 'mid' : 'low'}`}>{c.f}</span></td>
                     <td><span className={`ai-rfm-score ai-rfm-${c.m >= 4 ? 'high' : c.m >= 3 ? 'mid' : 'low'}`}>{c.m}</span></td>
                     <td>{c.orderCount}</td>
-                    <td>€{c.totalSpent.toFixed(2)}</td>
-                    <td className="ai-clv-cell">€{c.clv.toFixed(2)}</td>
+                    <td>S/{c.totalSpent.toFixed(2)}</td>
+                    <td className="ai-clv-cell">S/{c.clv.toFixed(2)}</td>
                     <td>
                       <span className="ai-churn-badge" style={{ background: `${c.churnColor}18`, color: c.churnColor, borderColor: `${c.churnColor}40` }}>
                         {churnLabels[c.churnRisk] || c.churnRisk}

@@ -250,7 +250,10 @@ function initializeTables() {
   try {
     database.exec(`ALTER TABLE users ADD COLUMN birth_date TEXT DEFAULT NULL`);
   } catch { /* Column already exists */ }
-
+// CMS category field (safe migration)
+  try {
+    database.exec(`ALTER TABLE cms_posts ADD COLUMN category TEXT DEFAULT ''`);
+  } catch { /* Column already exists */ }
   // Discount codes table
   database.exec(`
     CREATE TABLE IF NOT EXISTS discount_codes (
@@ -271,6 +274,94 @@ function initializeTables() {
     CREATE INDEX IF NOT EXISTS idx_discount_code ON discount_codes(code);
     CREATE INDEX IF NOT EXISTS idx_discount_user ON discount_codes(user_id);
   `);
+
+  // ============================================
+// AGREGAR ESTO al final de initializeTables()
+// en lib/db.ts — antes del último cierre de llave
+// ============================================
+
+  // CMS: Blog Posts
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS cms_posts (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      slug TEXT UNIQUE NOT NULL,
+      excerpt TEXT DEFAULT '',
+      content TEXT DEFAULT '',
+      cover_image TEXT DEFAULT '',
+      status TEXT DEFAULT 'draft' CHECK(status IN ('draft', 'published')),
+      author_id TEXT,
+      published_at DATETIME,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_cms_posts_slug ON cms_posts(slug);
+    CREATE INDEX IF NOT EXISTS idx_cms_posts_status ON cms_posts(status);
+  `);
+
+  // CMS: Lookbook
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS cms_lookbook (
+      id TEXT PRIMARY KEY,
+      title TEXT DEFAULT '',
+      description TEXT DEFAULT '',
+      image_url TEXT NOT NULL,
+      collection TEXT DEFAULT '',
+      sort_order INTEGER DEFAULT 0,
+      is_active INTEGER DEFAULT 1,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  // CMS: Banners
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS cms_banners (
+      id TEXT PRIMARY KEY,
+      title TEXT DEFAULT '',
+      subtitle TEXT DEFAULT '',
+      cta_text TEXT DEFAULT '',
+      cta_url TEXT DEFAULT '/',
+      image_url TEXT DEFAULT '',
+      position TEXT DEFAULT 'hero' CHECK(position IN ('hero', 'promo', 'announcement')),
+      is_active INTEGER DEFAULT 1,
+      sort_order INTEGER DEFAULT 0,
+      bg_color TEXT DEFAULT '#000000',
+      text_color TEXT DEFAULT '#ffffff',
+      starts_at DATETIME,
+      ends_at DATETIME,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  // CMS: Páginas estáticas
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS cms_pages (
+      id TEXT PRIMARY KEY,
+      slug TEXT UNIQUE NOT NULL,
+      title TEXT NOT NULL,
+      content TEXT DEFAULT '',
+      meta_description TEXT DEFAULT '',
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_by TEXT,
+      FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
+    );
+  `);
+
+  // Seed páginas estáticas si no existen
+  const pagesExist = database.prepare("SELECT COUNT(*) as c FROM cms_pages").get() as { c: number };
+  if (pagesExist.c === 0) {
+    const insertPage = database.prepare(`
+      INSERT INTO cms_pages (id, slug, title, content, meta_description)
+      VALUES (?, ?, ?, ?, ?)
+    `);
+    insertPage.run('page-brand', 'brand', 'Brand', '<p>Contenido de la página Brand...</p>', 'Conoce la historia de Seventhwear');
+    insertPage.run('page-faq', 'faq', 'FAQ', '<p>Preguntas frecuentes...</p>', 'Preguntas frecuentes sobre Seventhwear');
+    insertPage.run('page-envios', 'envios', 'Envíos', '<p>Información de envíos...</p>', 'Política de envíos de Seventhwear');
+    insertPage.run('page-devoluciones', 'devoluciones', 'Devoluciones', '<p>Política de devoluciones...</p>', 'Política de devoluciones de Seventhwear');
+  }
+
+
 }
 
 export default getDb;

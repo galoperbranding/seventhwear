@@ -208,7 +208,7 @@ export default function CheckoutPage() {
                   <p>{item.name}</p>
                   <p>Talla: {item.size} — Cant: {item.quantity}</p>
                 </div>
-                <span className="checkout-item-price">€{(item.price * item.quantity).toFixed(2)}</span>
+                <span className="checkout-item-price">S/{(item.price * item.quantity).toFixed(2)}</span>
               </div>
             ))}
           </div>
@@ -216,18 +216,18 @@ export default function CheckoutPage() {
           <div className="checkout-totals">
             <div className="checkout-totals-row">
               <span>Subtotal</span>
-              <span>€{cartTotal.toFixed(2)}</span>
+              <span>S/{cartTotal.toFixed(2)}</span>
             </div>
             <div className="checkout-totals-row">
               <span>Envío</span>
-              <span>{shippingCost === 0 ? 'Gratis' : `€${shippingCost.toFixed(2)}`}</span>
+              <span>{shippingCost === 0 ? 'Gratis' : `S/${shippingCost.toFixed(2)}`}</span>
             </div>
             {shippingCost > 0 && (
-              <p className="checkout-free-shipping">Envío gratis en pedidos +€100</p>
+              <p className="checkout-free-shipping">Envío gratis en pedidos +S/100</p>
             )}
             <div className="checkout-total-final">
               <span>Total</span>
-              <span>€{total.toFixed(2)}</span>
+              <span>S/{total.toFixed(2)}</span>
             </div>
           </div>
 

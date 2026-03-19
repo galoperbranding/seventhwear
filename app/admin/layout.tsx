@@ -35,9 +35,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 01-2 2H10a2 2 0 01-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z"/><line x1="10" y1="22" x2="14" y2="22"/></svg>
             IA & Analítica
           </Link>
+          <Link href="/admin/cms" className={`crm-nav-item ${pathname?.startsWith('/admin/cms') ? 'active' : ''}`}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            CMS
+          </Link>
         </nav>
 
         <div id="admin-sidebar-extra"></div>
+
+        {/* Volver al sitio */}
+        <div style={{ marginTop: 'auto', padding: '1.5rem 1rem', borderTop: '1px solid var(--color-border)' }}>
+          <Link
+            href="/"
+            style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.8rem', opacity: 0.5, transition: 'opacity 0.2s', textDecoration: 'none', color: 'inherit' }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+            onMouseLeave={e => (e.currentTarget.style.opacity = '0.5')}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Volver al sitio
+          </Link>
+        </div>
       </aside>
 
       <main className="crm-main">

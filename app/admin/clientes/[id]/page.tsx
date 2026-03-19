@@ -200,11 +200,11 @@ export default function CustomerDetailPage() {
                 <span className="crm-profile-stat-lbl">Pedidos</span>
               </div>
               <div className="crm-profile-stat">
-                <span className="crm-profile-stat-val">€{orderStats.total_spent.toFixed(0)}</span>
+                <span className="crm-profile-stat-val">S/{orderStats.total_spent.toFixed(0)}</span>
                 <span className="crm-profile-stat-lbl">Total</span>
               </div>
               <div className="crm-profile-stat">
-                <span className="crm-profile-stat-val">€{orderStats.avg_order.toFixed(0)}</span>
+                <span className="crm-profile-stat-val">S/{orderStats.avg_order.toFixed(0)}</span>
                 <span className="crm-profile-stat-lbl">Medio</span>
               </div>
               <div className="crm-profile-stat">
@@ -281,7 +281,7 @@ export default function CustomerDetailPage() {
                             <span className={`crm-payment-badge crm-payment-${order.payment_status}`}>
                               {order.payment_status === 'completed' ? '✓ Pagado' : order.payment_status === 'failed' ? '✕ Fallido' : '◷ Pendiente'}
                             </span>
-                            <span className="crm-order-amount">€{order.total.toFixed(2)}</span>
+                            <span className="crm-order-amount">S/{order.total.toFixed(2)}</span>
                           </div>
                         </div>
                         {order.items_summary && (
@@ -308,7 +308,7 @@ export default function CustomerDetailPage() {
                             <strong>{item.product_name}</strong>
                             <span>{item.size} / {item.color} × {item.quantity}</span>
                           </div>
-                          <span className="crm-cart-price">€{(item.price * item.quantity).toFixed(2)}</span>
+                          <span className="crm-cart-price">S/{(item.price * item.quantity).toFixed(2)}</span>
                         </div>
                       );
                     })}

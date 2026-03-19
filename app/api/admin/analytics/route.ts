@@ -189,7 +189,7 @@ export async function GET() {
       insights.push({
         type: 'warning',
         title: `${atRiskCustomers.length} clientes en riesgo de abandono`,
-        description: `Representan €${atRiskRevenue.toFixed(2)} en ingresos históricos. Considera enviar campañas de reactivación con descuentos personalizados.`,
+        description: `Representan S/${atRiskRevenue.toFixed(2)} en ingresos históricos. Considera enviar campañas de reactivación con descuentos personalizados.`,
         priority: 1,
       });
     }

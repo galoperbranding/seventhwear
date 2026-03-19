@@ -73,6 +73,11 @@ function AccountContent() {
     return <div className="cuenta-loading">Cargando...</div>;
   }
 
+  // Helper para parsear fechas de SQLite correctamente
+  function parseDate(dateStr: string): Date {
+    return new Date(dateStr.replace(' ', 'T'));
+  }
+
   async function handleLogout() {
     await logout();
     router.push('/');
@@ -134,7 +139,7 @@ function AccountContent() {
           <h2 className="cuenta-user-name">{user.first_name} {user.last_name}</h2>
           <p className="cuenta-user-email">{user.email}</p>
           <p className="cuenta-user-since">
-            Miembro desde {new Date(user.created_at).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+            Miembro desde {parseDate(user.created_at).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
           </p>
 
           <div className="cuenta-sidebar-stats">
@@ -143,7 +148,7 @@ function AccountContent() {
               <span className="cuenta-sidebar-stat-label">Pedidos</span>
             </div>
             <div className="cuenta-sidebar-stat">
-              <span className="cuenta-sidebar-stat-value">€{totalSpent.toFixed(0)}</span>
+              <span className="cuenta-sidebar-stat-value">S/{totalSpent.toFixed(0)}</span>
               <span className="cuenta-sidebar-stat-label">Total</span>
             </div>
           </div>
@@ -210,7 +215,7 @@ function AccountContent() {
                           <div>
                             <span className="cuenta-order-number">Pedido #{order.order_number}</span>
                             <span className="cuenta-order-date">
-                              {new Date(order.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+                              {parseDate(order.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
                             </span>
                           </div>
                         </div>
@@ -218,7 +223,7 @@ function AccountContent() {
                           <span className={`cuenta-order-status cuenta-status-${order.status}`}>
                             {statusLabels[order.status] || order.status}
                           </span>
-                          <span className="cuenta-order-amount">€{order.total.toFixed(2)}</span>
+                          <span className="cuenta-order-amount">S/{order.total.toFixed(2)}</span>
                           <span className={`cuenta-order-chevron ${expandedOrder === order.id ? 'open' : ''}`}>
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"/></svg>
                           </span>
@@ -249,13 +254,13 @@ function AccountContent() {
                                     {` · Cant: ${item.quantity}`}
                                   </span>
                                 </div>
-                                <span className="cuenta-item-price">€{(item.price * item.quantity).toFixed(2)}</span>
+                                <span className="cuenta-item-price">S/{(item.price * item.quantity).toFixed(2)}</span>
                               </div>
                             ))}
                           </div>
                           <div className="cuenta-order-total">
                             <span>Total del pedido</span>
-                            <span>€{order.total.toFixed(2)}</span>
+                            <span>S/{order.total.toFixed(2)}</span>
                           </div>
                         </div>
                       )}
@@ -329,20 +334,20 @@ function AccountContent() {
                     <span className="cuenta-activity-label">Pedidos realizados</span>
                   </div>
                   <div className="cuenta-activity-item">
-                    <span className="cuenta-activity-num">€{totalSpent.toFixed(2)}</span>
+                    <span className="cuenta-activity-num">S/{totalSpent.toFixed(2)}</span>
                     <span className="cuenta-activity-label">Total gastado</span>
                   </div>
                   <div className="cuenta-activity-item">
                     <span className="cuenta-activity-num">
                       {orders.length > 0
-                        ? `€${(totalSpent / orders.filter(o => o.status !== 'cancelled').length || 1).toFixed(2)}`
+                        ? `S/${(totalSpent / orders.filter(o => o.status !== 'cancelled').length || 1).toFixed(2)}`
                         : '—'}
                     </span>
                     <span className="cuenta-activity-label">Pedido medio</span>
                   </div>
                   <div className="cuenta-activity-item">
                     <span className="cuenta-activity-num">
-                      {new Date(user.created_at).toLocaleDateString('es-ES', { month: 'short', year: 'numeric' })}
+                      {parseDate(user.created_at).toLocaleDateString('es-ES', { month: 'short', year: 'numeric' })}
                     </span>
                     <span className="cuenta-activity-label">Miembro desde</span>
                   </div>

@@ -242,9 +242,9 @@ export default function AdminProductsPage() {
                       <p style={{ fontSize: '0.8rem', opacity: 0.5 }}>{p.collection}{p.badge ? ` · ${p.badge}` : ''}</p>
                     </td>
                     <td>
-                      <span className="crm-cell-money">S/{p.price.toFixed(2)}</span>
+                      <span className="crm-cell-money">€{p.price.toFixed(2)}</span>
                       {p.original_price && (
-                        <span style={{ opacity: 0.5, textDecoration: 'line-through', marginLeft: '0.5rem', fontSize: '0.85rem' }}>S/{p.original_price.toFixed(2)}</span>
+                        <span style={{ opacity: 0.5, textDecoration: 'line-through', marginLeft: '0.5rem', fontSize: '0.85rem' }}>€{p.original_price.toFixed(2)}</span>
                       )}
                     </td>
                     <td>{p.category}</td>
@@ -294,7 +294,7 @@ export default function AdminProductsPage() {
               {/* Price / Original / Stock / Order */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <label style={lbl}>Precio (S/) *</label>
+                  <label style={lbl}>Precio (€) *</label>
                   <input type="number" step="0.01" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} style={inp} />
                 </div>
                 <div>
