@@ -28,7 +28,7 @@ export default function CookieBanner() {
     <div className={`cookie-banner ${visible ? 'show' : ''}`}>
       <p>
         Utilizamos cookies para mejorar tu experiencia. Al continuar navegando, aceptas nuestra{' '}
-        <Link href="/privacidad" style={{ color: '#fff', textDecoration: 'underline' }}>política de cookies</Link>.
+        <Link href="/privacidad" style={{ color: '#000', textDecoration: 'underline' }}>política de cookies</Link>.
       </p>
       <div className="cookie-banner-actions">
         <button className="btn btn-small btn-outline" onClick={decline}>Rechazar</button>

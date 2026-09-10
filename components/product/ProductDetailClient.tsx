@@ -3,7 +3,9 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import { useToast } from '@/context/ToastContext';
 import ProductCard from '@/components/ProductCard';
+import ProductCarousel from '@/components/ProductCarousel';
 
 interface Product {
   id: string;
@@ -31,6 +33,7 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
   const [quantity, setQuantity] = useState(1);
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
   const { addToCart, openCart } = useCart();
+  const { showToast } = useToast();
 
   useEffect(() => {
     fetch(`/api/products/${slug}`)
@@ -65,7 +68,7 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
   function handleAddToCart() {
     if (!product) return;
     if (!selectedSize) {
-      alert('Selecciona una talla');
+      showToast('Selecciona una talla', 'error');
       return;
     }
     addToCart({
@@ -76,6 +79,7 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
       size: selectedSize,
       color: '',
     }, quantity);
+    showToast(`${product.name} añadido al carrito`);
   }
 
   const discount = product.original_price
@@ -245,12 +249,12 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
               <h2 className="reveal">También te puede gustar</h2>
               <Link href="/shop" className="view-all-link">Ver todo</Link>
             </div>
-            <div className="product-grid-3" style={{ marginTop: '2rem' }}>
+            <ProductCarousel>
               {related.map(p => (
                 <ProductCard key={p.id} id={p.id} name={p.name} slug={p.slug} price={p.price}
                   originalPrice={p.original_price} badge={p.badge} images={p.images} colors={p.colors} />
               ))}
-            </div>
+            </ProductCarousel>
           </section>
         )}
       </div>

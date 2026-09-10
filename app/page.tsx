@@ -1,4 +1,5 @@
 import HeroSlider from '@/components/home/HeroSlider';
+import Marquee from '@/components/home/Marquee';
 import Collections from '@/components/home/Collections';
 import ShopTheLook from '@/components/home/ShopTheLook';
 import Bestsellers from '@/components/home/Bestsellers';
@@ -11,12 +12,15 @@ export default function HomePage() {
   return (
     <>
       <HeroSlider />
-      <Collections />
-      <ShopTheLook />
-      <Bestsellers />
-      <Categories />
-      <Essentials />
-      <Newsletter />
+      <div className="main-content">
+        <Marquee />
+        <Collections />
+        <ShopTheLook />
+        <Bestsellers />
+        <Categories />
+        <Essentials />
+        <Newsletter />
+      </div>
       <CookieBanner />
     </>
   );

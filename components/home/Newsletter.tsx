@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
+import { useToast } from '@/context/ToastContext';
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const { showToast } = useToast();
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -18,6 +20,7 @@ export default function Newsletter() {
       if (res.ok) {
         setStatus('success');
         setEmail('');
+        showToast('¡Gracias por suscribirte! Usa el código WELCOME7 para 10% de descuento.');
       } else {
         setStatus('error');
       }
@@ -29,7 +32,7 @@ export default function Newsletter() {
   return (
     <section className="newsletter-section">
       <div className="container">
-        <div className="newsletter-content reveal">
+        <div className="newsletter-content reveal-blur">
           <h2>Únete al movimiento</h2>
           <p>Sé el primero en conocer nuevos lanzamientos y drops exclusivos.</p>
           <span className="newsletter-discount">10% OFF — Código: WELCOME7</span>

@@ -25,7 +25,7 @@ export default function BrandPage() {
       <section className="about-content">
         <div className="container">
           {/* Block 1 */}
-          <div className="about-grid reveal">
+          <div className="about-grid reveal-left">
             <div className="about-text">
               <h3>StreetRideWear</h3>
               <p>SEVENTHWEAR nace de la fusión de dos mundos: la calle y el ride. Somos una marca para los que no se conforman con un solo estilo, para los que viven entre el asfalto urbano y los caminos de tierra.</p>
@@ -37,7 +37,7 @@ export default function BrandPage() {
           </div>
 
           {/* Block 2 */}
-          <div className="about-grid reverse reveal">
+          <div className="about-grid reverse reveal-right">
             <div className="about-text">
               <h3>Nacidos de la adrenalina</h3>
               <p>Cada colección cuenta una historia. Desde las calles de la ciudad hasta las rutas de montaña, nuestras prendas están diseñadas para acompañarte en cada aventura.</p>
@@ -49,7 +49,7 @@ export default function BrandPage() {
           </div>
 
           {/* Block 3 */}
-          <div className="about-grid reveal">
+          <div className="about-grid reveal-left">
             <div className="about-text">
               <h3>Calidad sin compromisos</h3>
               <p>Cada prenda pasa por un riguroso control de calidad. Seleccionamos los mejores materiales y trabajamos con fábricas que respetan estándares éticos y medioambientales.</p>
@@ -62,9 +62,9 @@ export default function BrandPage() {
           </div>
 
           {/* Values */}
-          <div style={{ textAlign: 'center', padding: '80px 0', maxWidth: '700px', margin: '0 auto' }} className="reveal">
-            <h2 style={{ marginBottom: '40px' }}>Nuestros Valores</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '40px', textAlign: 'center' }}>
+          <div style={{ textAlign: 'center', padding: '80px 0', maxWidth: '700px', margin: '0 auto' }}>
+            <h2 className="reveal-title" style={{ marginBottom: '40px' }}>Nuestros Valores</h2>
+            <div className="reveal-stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '40px', textAlign: 'center' }}>
               <div>
                 <h4 style={{ marginBottom: '12px', fontSize: '1rem' }}>Autenticidad</h4>
                 <p style={{ fontSize: '0.85rem' }}>Creamos desde la experiencia real en la calle y el ride. Cada diseño refleja nuestra comunidad.</p>
@@ -83,12 +83,12 @@ export default function BrandPage() {
       </section>
 
       {/* CTA Banner */}
-      <section className="featured-banner reveal">
+      <section className="featured-banner reveal-scale">
         <div className="featured-banner-bg">
           <img src="/img/seventhwear_brand_5.jpg" alt="Explore collection" loading="lazy" />
         </div>
         <div className="featured-banner-overlay"></div>
-        <div className="featured-banner-content">
+        <div className="featured-banner-content reveal-left">
           <p className="featured-banner-tag">Explora la colección</p>
           <h2>Encuentra<br />tu estilo</h2>
           <p>Descubre las colecciones que definen el StreetRideWear. Desde tees oversized hasta jerseys técnicos de riding.</p>

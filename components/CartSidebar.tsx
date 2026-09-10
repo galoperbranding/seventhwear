@@ -23,22 +23,24 @@ export default function CartSidebar() {
               </Link>
             </div>
           ) : (
-            cart.map((item) => (
-              <div key={`${item.productId}-${item.size}`} className="cart-item">
+            cart.map((item, idx) => (
+              <div key={`${item.productId}-${item.size}-${item.color}-${idx}`} className="cart-item">
                 <div className="cart-item-image">
                   <img src={item.image} alt={item.name} />
                 </div>
                 <div className="cart-item-info">
                   <div>
                     <div className="cart-item-title">{item.name}</div>
-                    <div className="cart-item-variant">Talla: {item.size}</div>
-                    <button className="cart-item-remove" onClick={() => removeFromCart(item.productId, item.size)}>Eliminar</button>
+                    <div className="cart-item-variant">
+                      Talla: {item.size}{item.color ? ` — Color: ${item.color}` : ''}
+                    </div>
+                    <button className="cart-item-remove" onClick={() => removeFromCart(item.productId, item.size, item.color)}>Eliminar</button>
                   </div>
                   <div className="cart-item-bottom">
                     <div className="cart-item-qty">
-                      <button onClick={() => updateQuantity(item.productId, item.size, item.quantity - 1)}>−</button>
+                      <button onClick={() => updateQuantity(item.productId, item.size, item.color, item.quantity - 1)}>−</button>
                       <span>{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.productId, item.size, item.quantity + 1)}>+</button>
+                      <button onClick={() => updateQuantity(item.productId, item.size, item.color, item.quantity + 1)}>+</button>
                     </div>
                     <div className="cart-item-price">€{(item.price * item.quantity).toFixed(2)}</div>
                   </div>

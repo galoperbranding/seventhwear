@@ -189,7 +189,7 @@ export default function ShopPage() {
             </button>
           </div>
         ) : (
-          <div className="product-grid">
+          <div className="product-grid reveal-stagger" key={products.map(p => p.id).join(',')}>
             {products.map(p => (
               <ProductCard key={p.id} id={p.id} name={p.name} slug={p.slug} price={p.price}
                 originalPrice={p.original_price} badge={p.badge} images={p.images} colors={p.colors} />

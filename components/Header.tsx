@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 
@@ -11,10 +11,13 @@ const TRANSPARENT_PAGES = ['/'];
 
 export default function Header() {
   const { cartCount, openCart } = useCart();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   const isTransparent = TRANSPARENT_PAGES.includes(pathname);
 
@@ -31,8 +34,28 @@ export default function Header() {
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
+    setUserMenuOpen(false);
     document.body.style.overflow = '';
   }, [pathname]);
+
+  // Close user menu on click outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    }
+    if (userMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [userMenuOpen]);
+
+  const handleLogout = useCallback(async () => {
+    setUserMenuOpen(false);
+    await logout();
+    router.push('/');
+  }, [logout, router]);
 
   const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen(prev => {
@@ -76,9 +99,34 @@ export default function Header() {
           />
         </Link>
         <div className="header-right">
-          <Link href={user ? '/cuenta' : '/login'} className="header-action-btn" aria-label="Cuenta">
-            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          </Link>
+          {user ? (
+            <div className="user-menu-wrap" ref={userMenuRef}>
+              <button
+                className="header-action-btn"
+                aria-label="Cuenta"
+                onClick={() => setUserMenuOpen(prev => !prev)}
+              >
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </button>
+              {userMenuOpen && (
+                <div className="user-dropdown">
+                  <div className="user-dropdown-name">{user.first_name} {user.last_name}</div>
+                  <div className="user-dropdown-email">{user.email}</div>
+                  <div className="user-dropdown-divider" />
+                  <Link href="/cuenta" className="user-dropdown-item" onClick={() => setUserMenuOpen(false)}>Mi cuenta</Link>
+                  {user.role === 'admin' && (
+                    <Link href="/admin" className="user-dropdown-item" onClick={() => setUserMenuOpen(false)}>Admin Panel</Link>
+                  )}
+                  <div className="user-dropdown-divider" />
+                  <button className="user-dropdown-item user-dropdown-logout" onClick={handleLogout}>Cerrar sesión</button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link href="/login" className="header-action-btn" aria-label="Cuenta">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </Link>
+          )}
           <button className="header-action-btn cart-btn" aria-label="Carrito" onClick={openCart}>
             <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
             {cartCount > 0 && <span className="cart-count">{cartCount}</span>}

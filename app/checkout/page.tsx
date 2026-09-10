@@ -4,11 +4,13 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/context/ToastContext';
 import Link from 'next/link';
 
 export default function CheckoutPage() {
   const { cart, cartTotal, clearCart } = useCart();
   const { user } = useAuth();
+  const { showToast } = useToast();
   const router = useRouter();
 
   const [firstName, setFirstName] = useState(user?.first_name || '');
@@ -22,6 +24,7 @@ export default function CheckoutPage() {
   const [country, setCountry] = useState('PE');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const shippingCost = cartTotal >= 100 ? 0 : 9.95;
   const total = cartTotal + shippingCost;
@@ -43,6 +46,25 @@ export default function CheckoutPage() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError('');
+    setFieldErrors({});
+
+    // Client-side validation
+    const errors: Record<string, string> = {};
+    if (firstName.trim().length < 2) errors.firstName = 'Nombre demasiado corto';
+    if (lastName.trim().length < 2) errors.lastName = 'Apellido demasiado corto';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'Email inválido';
+    if (!/^\+?[\d\s\-()]{7,20}$/.test(phone)) errors.phone = 'Teléfono inválido';
+    if (address.trim().length < 5) errors.address = 'Dirección demasiado corta';
+    if (city.trim().length < 2) errors.city = 'Ciudad requerida';
+    if (state.trim().length < 2) errors.state = 'Región requerida';
+    if (postalCode.trim().length < 3) errors.postalCode = 'Código postal inválido';
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      showToast('Revisa los campos marcados en rojo', 'error');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -90,8 +112,7 @@ export default function CheckoutPage() {
     }
   }
 
-  const inputStyle = { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', padding: '0.75rem 1rem', borderRadius: '4px', fontSize: '0.95rem', width: '100%' };
-  const labelStyle = { fontSize: '0.75rem', textTransform: 'uppercase' as const, letterSpacing: '0.1em', opacity: 0.7, display: 'block', marginBottom: '0.5rem' };
+  const errorMsg = (field: string) => fieldErrors[field] ? <span className="field-error">{fieldErrors[field]}</span> : null;
 
   return (
     <>
@@ -100,124 +121,126 @@ export default function CheckoutPage() {
         <p>Completa tu pedido</p>
       </div>
 
-      <div className="container" style={{ maxWidth: '1000px', padding: '2rem 1.5rem 4rem' }}>
-        <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '3rem', alignItems: 'start' }}>
-          {/* Shipping Form */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <h3 style={{ fontSize: '1.1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Datos de envío</h3>
+      <form onSubmit={handleSubmit} className="checkout-grid">
+        {/* Shipping Form */}
+        <div className="checkout-shipping">
+          <h3>Datos de envío</h3>
 
-            {error && (
-              <div style={{ background: 'rgba(244,67,54,0.1)', border: '1px solid rgba(244,67,54,0.3)', padding: '0.75rem 1rem', borderRadius: '4px', color: '#f44336', fontSize: '0.9rem' }}>
-                {error}
-              </div>
-            )}
+          {error && <div className="auth-error">{error}</div>}
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div>
-                <label style={labelStyle}>Nombre</label>
-                <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} required style={inputStyle} />
-              </div>
-              <div>
-                <label style={labelStyle}>Apellido</label>
-                <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} required style={inputStyle} />
-              </div>
+          <div className="checkout-row">
+            <div className={`checkout-field${fieldErrors.firstName ? ' has-error' : ''}`}>
+              <label>Nombre</label>
+              <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} required />
+              {errorMsg('firstName')}
             </div>
-
-            <div>
-              <label style={labelStyle}>Email</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required style={inputStyle} />
-            </div>
-
-            <div>
-              <label style={labelStyle}>Teléfono</label>
-              <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} required style={inputStyle} />
-            </div>
-
-            <div>
-              <label style={labelStyle}>Dirección</label>
-              <input type="text" value={address} onChange={e => setAddress(e.target.value)} required style={inputStyle} />
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div>
-                <label style={labelStyle}>Ciudad</label>
-                <input type="text" value={city} onChange={e => setCity(e.target.value)} required style={inputStyle} />
-              </div>
-              <div>
-                <label style={labelStyle}>Estado / Región</label>
-                <input type="text" value={state} onChange={e => setState(e.target.value)} required style={inputStyle} />
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div>
-                <label style={labelStyle}>Código postal</label>
-                <input type="text" value={postalCode} onChange={e => setPostalCode(e.target.value)} required style={inputStyle} />
-              </div>
-              <div>
-                <label style={labelStyle}>País</label>
-                <select value={country} onChange={e => setCountry(e.target.value)} style={inputStyle}>
-                  <option value="PE">Perú</option>
-                  <option value="ES">España</option>
-                  <option value="MX">México</option>
-                  <option value="CO">Colombia</option>
-                  <option value="CL">Chile</option>
-                  <option value="AR">Argentina</option>
-                  <option value="US">Estados Unidos</option>
-                  <option value="OTHER">Otro</option>
-                </select>
-              </div>
+            <div className={`checkout-field${fieldErrors.lastName ? ' has-error' : ''}`}>
+              <label>Apellido</label>
+              <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} required />
+              {errorMsg('lastName')}
             </div>
           </div>
 
-          {/* Order Summary */}
-          <div style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '1.5rem', position: 'sticky', top: '120px' }}>
-            <h3 style={{ fontSize: '1.1rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.5rem' }}>Resumen del pedido</h3>
+          <div className={`checkout-field${fieldErrors.email ? ' has-error' : ''}`}>
+            <label>Email</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+            {errorMsg('email')}
+          </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
-              {cart.map((item, i) => (
-                <div key={i} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  <div style={{ width: '60px', height: '75px', borderRadius: '4px', overflow: 'hidden', flexShrink: 0, background: 'rgba(255,255,255,0.05)' }}>
-                    <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: '0.9rem', fontWeight: 500 }}>{item.name}</p>
-                    <p style={{ fontSize: '0.8rem', opacity: 0.6 }}>Talla: {item.size} — Cant: {item.quantity}</p>
-                  </div>
-                  <span style={{ fontWeight: 500, fontSize: '0.9rem' }}>€{(item.price * item.quantity).toFixed(2)}</span>
+          <div className={`checkout-field${fieldErrors.phone ? ' has-error' : ''}`}>
+            <label>Teléfono</label>
+            <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} required />
+            {errorMsg('phone')}
+          </div>
+
+          <div className={`checkout-field${fieldErrors.address ? ' has-error' : ''}`}>
+            <label>Dirección</label>
+            <input type="text" value={address} onChange={e => setAddress(e.target.value)} required />
+            {errorMsg('address')}
+          </div>
+
+          <div className="checkout-row">
+            <div className={`checkout-field${fieldErrors.city ? ' has-error' : ''}`}>
+              <label>Ciudad</label>
+              <input type="text" value={city} onChange={e => setCity(e.target.value)} required />
+              {errorMsg('city')}
+            </div>
+            <div className={`checkout-field${fieldErrors.state ? ' has-error' : ''}`}>
+              <label>Estado / Región</label>
+              <input type="text" value={state} onChange={e => setState(e.target.value)} required />
+              {errorMsg('state')}
+            </div>
+          </div>
+
+          <div className="checkout-row">
+            <div className={`checkout-field${fieldErrors.postalCode ? ' has-error' : ''}`}>
+              <label>Código postal</label>
+              <input type="text" value={postalCode} onChange={e => setPostalCode(e.target.value)} required />
+              {errorMsg('postalCode')}
+            </div>
+            <div className="checkout-field">
+              <label>País</label>
+              <select value={country} onChange={e => setCountry(e.target.value)}>
+                <option value="PE">Perú</option>
+                <option value="ES">España</option>
+                <option value="MX">México</option>
+                <option value="CO">Colombia</option>
+                <option value="CL">Chile</option>
+                <option value="AR">Argentina</option>
+                <option value="US">Estados Unidos</option>
+                <option value="OTHER">Otro</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Order Summary */}
+        <div className="checkout-summary">
+          <h3 style={{ marginBottom: '1.5rem' }}>Resumen del pedido</h3>
+
+          <div className="checkout-summary-items">
+            {cart.map((item, i) => (
+              <div key={i} className="checkout-item">
+                <div className="checkout-item-img">
+                  <img src={item.image} alt={item.name} />
                 </div>
-              ))}
-            </div>
-
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.9rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ opacity: 0.7 }}>Subtotal</span>
-                <span>€{cartTotal.toFixed(2)}</span>
+                <div className="checkout-item-info">
+                  <p>{item.name}</p>
+                  <p>Talla: {item.size} — Cant: {item.quantity}</p>
+                </div>
+                <span className="checkout-item-price">S/{(item.price * item.quantity).toFixed(2)}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ opacity: 0.7 }}>Envío</span>
-                <span>{shippingCost === 0 ? 'Gratis' : `€${shippingCost.toFixed(2)}`}</span>
-              </div>
-              {shippingCost > 0 && (
-                <p style={{ fontSize: '0.75rem', opacity: 0.5 }}>Envío gratis en pedidos +€100</p>
-              )}
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '0.75rem', marginTop: '0.5rem', fontSize: '1.1rem', fontWeight: 600 }}>
-                <span>Total</span>
-                <span>€{total.toFixed(2)}</span>
-              </div>
-            </div>
-
-            <button type="submit" disabled={loading} className="btn btn-primary" style={{ width: '100%', padding: '0.875rem', fontSize: '1rem', marginTop: '1.5rem' }}>
-              {loading ? 'Procesando...' : 'Pagar con PayPal'}
-            </button>
-
-            <p style={{ textAlign: 'center', fontSize: '0.75rem', opacity: 0.5, marginTop: '1rem' }}>
-              Al completar tu compra, aceptas nuestros{' '}
-              <Link href="/terminos" style={{ textDecoration: 'underline' }}>Términos y Condiciones</Link>
-            </p>
+            ))}
           </div>
-        </form>
-      </div>
+
+          <div className="checkout-totals">
+            <div className="checkout-totals-row">
+              <span>Subtotal</span>
+              <span>S/{cartTotal.toFixed(2)}</span>
+            </div>
+            <div className="checkout-totals-row">
+              <span>Envío</span>
+              <span>{shippingCost === 0 ? 'Gratis' : `S/${shippingCost.toFixed(2)}`}</span>
+            </div>
+            {shippingCost > 0 && (
+              <p className="checkout-free-shipping">Envío gratis en pedidos +S/100</p>
+            )}
+            <div className="checkout-total-final">
+              <span>Total</span>
+              <span>S/{total.toFixed(2)}</span>
+            </div>
+          </div>
+
+          <button type="submit" disabled={loading} className="btn btn-primary auth-submit" style={{ marginTop: '1.5rem' }}>
+            {loading ? 'Procesando...' : 'Pagar con PayPal'}
+          </button>
+
+          <p className="checkout-terms">
+            Al completar tu compra, aceptas nuestros{' '}
+            <Link href="/terminos">Términos y Condiciones</Link>
+          </p>
+        </div>
+      </form>
     </>
   );
 }

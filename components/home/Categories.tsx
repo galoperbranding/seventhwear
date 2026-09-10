@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import TextReveal from '@/components/TextReveal';
 
 const categories = [
   {
@@ -22,13 +23,13 @@ const categories = [
 
 export default function Categories() {
   return (
-    <section className="categories-section reveal">
+    <section className="categories-section">
       <div className="container">
-        <div className="section-header">
-          <h2>Categorías</h2>
+        <div className="section-header reveal">
+          <TextReveal as="h2">Categorías</TextReveal>
         </div>
       </div>
-      <div className="categories-grid">
+      <div className="categories-grid reveal-stagger-scale">
         {categories.map(cat => (
           <Link href={`/shop?category=${cat.slug}`} className="category-card" key={cat.slug}>
             <img src={cat.image} alt={cat.name} loading="lazy" />

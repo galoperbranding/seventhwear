@@ -1,13 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import ContactPopup from '@/components/ContactPopup';
-import CartSidebar from '@/components/CartSidebar';
-import SearchOverlay from '@/components/SearchOverlay';
+import ConditionalShell from '@/components/ConditionalShell';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
-import ScrollReveal from '@/components/ScrollReveal';
+import { ToastProvider } from '@/context/ToastContext';
+import PageTransition from '@/components/PageTransition';
 
 export const metadata: Metadata = {
   title: 'SEVENTHWEAR — StreetRideWear',
@@ -17,11 +14,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
       <head>
@@ -35,13 +28,12 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <CartProvider>
-            <Header />
-            <main>{children}</main>
-            <Footer />
-            <CartSidebar />
-            <SearchOverlay />
-            <ContactPopup />
-            <ScrollReveal />
+            <ToastProvider>
+              <PageTransition />
+              <ConditionalShell>
+                {children}
+              </ConditionalShell>
+            </ToastProvider>
           </CartProvider>
         </AuthProvider>
       </body>

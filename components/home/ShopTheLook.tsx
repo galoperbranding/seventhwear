@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import TextReveal from '@/components/TextReveal';
 
 const looks = [
   {
-    image: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=600&h=800&fit=crop',
+    image: '/img/tshirt/polo_seventhwear_2.webp',
     alt: 'Look 1',
     items: [
       { name: 'Oversized Tee', slug: 'oversized-tee-urban' },
@@ -12,7 +13,7 @@ const looks = [
     ],
   },
   {
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=800&fit=crop',
+    image: '/img/tshirt/polo_seventhwear_3.webp',
     alt: 'Look 2',
     items: [
       { name: 'Heavy Hoodie', slug: 'heavy-hoodie-dark' },
@@ -20,7 +21,7 @@ const looks = [
     ],
   },
   {
-    image: 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=600&h=800&fit=crop',
+    image: '/img/tshirt/polo_seventhwear_4.webp',
     alt: 'Look 3',
     items: [
       { name: 'Graphic Tee', slug: 'graphic-tee-skull-rider' },
@@ -34,11 +35,11 @@ export default function ShopTheLook() {
     <section className="shop-the-look">
       <div className="container">
         <div className="section-header reveal">
-          <h2>Shop the Look — Style Guide</h2>
+          <TextReveal as="h2">Shop the Look — Style Guide</TextReveal>
         </div>
-        <div className="style-grid">
+        <div className="style-grid reveal-stagger-scale">
           {looks.map((look, i) => (
-            <div className="style-card reveal" key={i}>
+            <div className="style-card" key={i}>
               <div className="style-card-image">
                 <img src={look.image} alt={look.alt} loading="lazy" />
               </div>

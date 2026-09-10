@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
+import { logAudit, getClientIp } from '@/lib/security';
 
 export async function GET() {
   try {
@@ -15,9 +16,14 @@ export async function GET() {
       FROM orders o
       LEFT JOIN users u ON o.user_id = u.id
       ORDER BY o.created_at DESC
-    `).all();
+    `).all() as Array<Record<string, unknown>>;
 
-    return NextResponse.json({ orders });
+    const ordersWithItems = orders.map(order => {
+      const items = db.prepare('SELECT * FROM order_items WHERE order_id = ?').all(order.id as string);
+      return { ...order, items };
+    });
+
+    return NextResponse.json({ orders: ordersWithItems });
   } catch {
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
@@ -50,6 +56,8 @@ export async function PATCH(request: NextRequest) {
       db.prepare('UPDATE orders SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
         .run(status, order_id);
     }
+
+    logAudit({ action: 'order_status_update', actorId: user.userId, actorEmail: user.email, targetType: 'order', targetId: order_id, ip: getClientIp(request), details: `Status → ${status}${tracking_number ? `, tracking: ${tracking_number}` : ''}` });
 
     return NextResponse.json({ message: 'Pedido actualizado' });
   } catch {
