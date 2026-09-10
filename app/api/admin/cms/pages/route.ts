@@ -14,6 +14,7 @@ export async function PUT(req: NextRequest) {
   if (!user || user.role !== 'admin') return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const { id, title, content, meta_description } = await req.json();
   if (!id) return NextResponse.json({ error: 'ID requerido' }, { status: 400 });
-  getDb().prepare(`UPDATE cms_pages SET title=?, content=?, meta_description=?, updated_at=?, updated_by=? WHERE id=?`).run(title, content || '', meta_description || '', new Date().toISOString(), user.id, id);
+  const authorId = user.id ?? user.userId;
+  getDb().prepare(`UPDATE cms_pages SET title=?, content=?, meta_description=?, updated_at=?, updated_by=? WHERE id=?`).run(title, content || '', meta_description || '', new Date().toISOString(), authorId, id);
   return NextResponse.json({ success: true });
 }

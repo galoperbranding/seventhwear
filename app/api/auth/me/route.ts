@@ -10,10 +10,15 @@ export async function GET() {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
+    const userId = authUser.userId ?? authUser.id;
+    if (!userId) {
+      return NextResponse.json({ error: 'Token inválido' }, { status: 401 });
+    }
+
     const db = getDb();
     const user = db.prepare(
       'SELECT id, email, first_name, last_name, phone, role, birth_date, created_at FROM users WHERE id = ?'
-    ).get(authUser.userId) as {
+    ).get(userId) as {
       id: string; email: string; first_name: string;
       last_name: string; phone: string; role: string; birth_date: string | null; created_at: string;
     } | undefined;
@@ -48,6 +53,10 @@ export async function PATCH(request: NextRequest) {
 
     const body = await request.json();
     const db = getDb();
+    const userId = authUser.userId ?? authUser.id;
+    if (!userId) {
+      return NextResponse.json({ error: 'Token inválido' }, { status: 401 });
+    }
 
     const updates: string[] = [];
     const values: (string | null)[] = [];
@@ -77,14 +86,14 @@ export async function PATCH(request: NextRequest) {
     }
 
     updates.push('updated_at = CURRENT_TIMESTAMP');
-    values.push(authUser.userId);
+    values.push(userId);
 
     db.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`).run(...values);
 
     // Return updated user
     const user = db.prepare(
       'SELECT id, email, first_name, last_name, phone, role, birth_date, created_at FROM users WHERE id = ?'
-    ).get(authUser.userId) as Record<string, unknown>;
+    ).get(userId) as Record<string, unknown>;
 
     return NextResponse.json({ user });
   } catch {

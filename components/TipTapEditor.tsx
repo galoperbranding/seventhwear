@@ -73,50 +73,50 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Empieza
     },
   });
 
-  // Sync content when key prop changes (page/post switch)
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content, false);
+      editor.commands.setContent(content, { emitUpdate: false });
     }
   }, [content, editor]);
 
   if (!editor) return null;
+  const safeEditor = editor as NonNullable<typeof editor>;
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (!file || !editor) return;
+    if (!file) return;
     setUploading(true);
     const fd = new FormData();
     fd.append('file', file);
     try {
       const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
       const data = await res.json();
-      if (res.ok && data.url) editor.chain().focus().setImage({ src: data.url }).run();
+      if (res.ok && data.url) safeEditor.chain().focus().setImage({ src: data.url }).run();
     } catch { /* ignore */ }
     finally { setUploading(false); e.target.value = ''; }
   }
 
   function handleImageUrl() {
     const url = prompt('URL de la imagen:');
-    if (url) editor.chain().focus().setImage({ src: url }).run();
+    if (url) safeEditor.chain().focus().setImage({ src: url }).run();
   }
 
   function handleLink() {
-    const prev = editor.getAttributes('link').href || '';
+    const prev = safeEditor.getAttributes('link').href || '';
     const url = prompt('URL del enlace:', prev);
     if (url === null) return;
-    if (url === '') { editor.chain().focus().unsetLink().run(); return; }
-    editor.chain().focus().setLink({ href: url }).run();
+    if (url === '') { safeEditor.chain().focus().unsetLink().run(); return; }
+    safeEditor.chain().focus().setLink({ href: url }).run();
   }
 
   function handleYoutube() {
     const url = prompt('URL de YouTube o Vimeo:');
-    if (url) editor.commands.setYoutubeVideo({ src: url });
+    if (url) safeEditor.commands.setYoutubeVideo({ src: url });
   }
 
   function handleColor() {
-    const color = prompt('Color hexadecimal:', editor.getAttributes('textStyle').color || '#000000');
-    if (color) editor.chain().focus().setColor(color).run();
+    const color = prompt('Color hexadecimal:', safeEditor.getAttributes('textStyle').color || '#000000');
+    if (color) safeEditor.chain().focus().setColor(color).run();
   }
 
   const row: React.CSSProperties = {
@@ -128,51 +128,47 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Empieza
 
   return (
     <div style={{ border: '1px solid var(--color-border)', borderRadius: 8, overflow: 'hidden' }}>
-
-      {/* Fila 1: Texto */}
       <div style={row}>
         <span style={label}>Texto</span>
-        <TBtn onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')} title="Negrita"><b>B</b></TBtn>
-        <TBtn onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive('italic')} title="Cursiva"><i>I</i></TBtn>
-        <TBtn onClick={() => editor.chain().focus().toggleUnderline().run()} active={editor.isActive('underline')} title="Subrayado"><u>U</u></TBtn>
-        <TBtn onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')} title="Tachado"><s>S</s></TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().toggleBold().run()} active={safeEditor.isActive('bold')} title="Negrita"><b>B</b></TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().toggleItalic().run()} active={safeEditor.isActive('italic')} title="Cursiva"><i>I</i></TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().toggleUnderline().run()} active={safeEditor.isActive('underline')} title="Subrayado"><u>U</u></TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().toggleStrike().run()} active={safeEditor.isActive('strike')} title="Tachado"><s>S</s></TBtn>
         <Divider />
         <span style={label}>Tamaño</span>
-        <TBtn onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} active={editor.isActive('heading', { level: 1 })} title="Título H1">H1</TBtn>
-        <TBtn onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })} title="Subtítulo H2">H2</TBtn>
-        <TBtn onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive('heading', { level: 3 })} title="H3">H3</TBtn>
-        <TBtn onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()} active={editor.isActive('heading', { level: 4 })} title="H4">H4</TBtn>
-        <TBtn onClick={() => editor.chain().focus().setParagraph().run()} active={editor.isActive('paragraph')} title="Párrafo">P</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().toggleHeading({ level: 1 }).run()} active={safeEditor.isActive('heading', { level: 1 })} title="Título H1">H1</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().toggleHeading({ level: 2 }).run()} active={safeEditor.isActive('heading', { level: 2 })} title="Subtítulo H2">H2</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().toggleHeading({ level: 3 }).run()} active={safeEditor.isActive('heading', { level: 3 })} title="H3">H3</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().toggleHeading({ level: 4 }).run()} active={safeEditor.isActive('heading', { level: 4 })} title="H4">H4</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().setParagraph().run()} active={safeEditor.isActive('paragraph')} title="Párrafo">P</TBtn>
         <Divider />
         <span style={label}>Color</span>
         <TBtn onClick={handleColor} title="Color de texto">
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
             <span>A</span>
-            <span style={{ width: 14, height: 3, background: editor.getAttributes('textStyle').color || 'var(--color-text)', borderRadius: 2, display: 'block' }} />
+            <span style={{ width: 14, height: 3, background: safeEditor.getAttributes('textStyle').color || 'var(--color-text)', borderRadius: 2, display: 'block' }} />
           </div>
         </TBtn>
-        <TBtn onClick={() => editor.chain().focus().unsetColor().run()} title="Quitar color">✕</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().unsetColor().run()} title="Quitar color">✕</TBtn>
       </div>
 
-      {/* Fila 2: Estructura */}
       <div style={row}>
         <span style={label}>Alinear</span>
-        <TBtn onClick={() => editor.chain().focus().setTextAlign('left').run()} active={editor.isActive({ textAlign: 'left' })} title="Izquierda">⬅</TBtn>
-        <TBtn onClick={() => editor.chain().focus().setTextAlign('center').run()} active={editor.isActive({ textAlign: 'center' })} title="Centro">↔</TBtn>
-        <TBtn onClick={() => editor.chain().focus().setTextAlign('right').run()} active={editor.isActive({ textAlign: 'right' })} title="Derecha">➡</TBtn>
-        <TBtn onClick={() => editor.chain().focus().setTextAlign('justify').run()} active={editor.isActive({ textAlign: 'justify' })} title="Justificar">≡</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().setTextAlign('left').run()} active={safeEditor.isActive({ textAlign: 'left' })} title="Izquierda">⬅</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().setTextAlign('center').run()} active={safeEditor.isActive({ textAlign: 'center' })} title="Centro">↔</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().setTextAlign('right').run()} active={safeEditor.isActive({ textAlign: 'right' })} title="Derecha">➡</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().setTextAlign('justify').run()} active={safeEditor.isActive({ textAlign: 'justify' })} title="Justificar">≡</TBtn>
         <Divider />
         <span style={label}>Listas</span>
-        <TBtn onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')} title="Lista viñetas">• Lista</TBtn>
-        <TBtn onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')} title="Lista numerada">1. Lista</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().toggleBulletList().run()} active={safeEditor.isActive('bulletList')} title="Lista viñetas">• Lista</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().toggleOrderedList().run()} active={safeEditor.isActive('orderedList')} title="Lista numerada">1. Lista</TBtn>
         <Divider />
         <span style={label}>Bloques</span>
-        <TBtn onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')} title="Cita">" Cita</TBtn>
-        <TBtn onClick={() => editor.chain().focus().toggleCodeBlock().run()} active={editor.isActive('codeBlock')} title="Código">&lt;/&gt;</TBtn>
-        <TBtn onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Separador">— HR</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().toggleBlockquote().run()} active={safeEditor.isActive('blockquote')} title="Cita">" Cita</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().toggleCodeBlock().run()} active={safeEditor.isActive('codeBlock')} title="Código">&lt;/&gt;</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().setHorizontalRule().run()} title="Separador">— HR</TBtn>
       </div>
 
-      {/* Fila 3: Medios */}
       <div style={row}>
         <span style={label}>Medios</span>
         <label style={{
@@ -186,22 +182,22 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Empieza
         <TBtn onClick={handleImageUrl} title="Imagen por URL">🔗 Img URL</TBtn>
         <Divider />
         <span style={label}>Img posición</span>
-        <TBtn onClick={() => editor.chain().focus().setTextAlign('left').run()} title="Imagen izquierda">◧ Izq</TBtn>
-        <TBtn onClick={() => editor.chain().focus().setTextAlign('center').run()} title="Imagen centro">◫ Centro</TBtn>
-        <TBtn onClick={() => editor.chain().focus().setTextAlign('right').run()} title="Imagen derecha">◨ Der</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().setTextAlign('left').run()} title="Imagen izquierda">◧ Izq</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().setTextAlign('center').run()} title="Imagen centro">◫ Centro</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().setTextAlign('right').run()} title="Imagen derecha">◨ Der</TBtn>
         <Divider />
         <TBtn onClick={handleYoutube} title="Embed YouTube/Vimeo">▶ Video</TBtn>
-        <TBtn onClick={handleLink} active={editor.isActive('link')} title="Enlace">🔗 Link</TBtn>
-        <TBtn onClick={() => editor.chain().focus().unsetLink().run()} title="Quitar enlace">✕ Link</TBtn>
+        <TBtn onClick={handleLink} active={safeEditor.isActive('link')} title="Enlace">🔗 Link</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().unsetLink().run()} title="Quitar enlace">✕ Link</TBtn>
         <Divider />
-        <TBtn onClick={() => editor.chain().focus().undo().run()} title="Deshacer">↩</TBtn>
-        <TBtn onClick={() => editor.chain().focus().redo().run()} title="Rehacer">↪</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().undo().run()} title="Deshacer">↩</TBtn>
+        <TBtn onClick={() => safeEditor.chain().focus().redo().run()} title="Rehacer">↪</TBtn>
       </div>
 
-      <EditorContent editor={editor} />
+      <EditorContent editor={safeEditor} />
 
       <div style={{ padding: '0.4rem 0.75rem', borderTop: '1px solid var(--color-border)', background: 'var(--color-bg-secondary)', fontSize: '0.72rem', opacity: 0.5, textAlign: 'right' }}>
-        {editor.getText().length} caracteres
+        {safeEditor.getText().length} caracteres
       </div>
     </div>
   );

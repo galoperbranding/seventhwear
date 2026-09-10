@@ -15,9 +15,11 @@ const TOKEN_EXPIRY = '7d';
 const JWT_ALGORITHM = 'HS256' as const;
 
 export interface JwtPayload {
-  userId: string;
+  id?: string;
+  userId?: string;
   email: string;
   role: string;
+  [key: string]: unknown;
 }
 
 export async function hashPassword(password: string): Promise<string> {
@@ -29,12 +31,23 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 export function generateToken(payload: JwtPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: TOKEN_EXPIRY, algorithm: JWT_ALGORITHM });
+  const normalizedPayload = {
+    ...payload,
+    id: payload.id ?? payload.userId,
+    userId: payload.userId ?? payload.id,
+  };
+
+  return jwt.sign(normalizedPayload, JWT_SECRET, { expiresIn: TOKEN_EXPIRY, algorithm: JWT_ALGORITHM });
 }
 
 export function verifyToken(token: string): JwtPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET, { algorithms: [JWT_ALGORITHM] }) as JwtPayload;
+    const decoded = jwt.verify(token, JWT_SECRET, { algorithms: [JWT_ALGORITHM] }) as JwtPayload;
+    return {
+      ...decoded,
+      id: decoded.id ?? decoded.userId,
+      userId: decoded.userId ?? decoded.id,
+    };
   } catch {
     return null;
   }
