@@ -2,12 +2,20 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
+const isProduction = process.env.NODE_ENV === 'production';
+const isBuild = process.env.NEXT_PHASE === 'phase-production-build';
+
+const JWT_SECRET = process.env.JWT_SECRET || (isProduction ? '' : 'dev-secret-do-not-use-in-production');
+if (typeof window === 'undefined' && isProduction && !isBuild) {
+  if (!process.env.JWT_SECRET || JWT_SECRET.length < 32) {
+    throw new Error('[SECURITY] JWT_SECRET must be set and at least 32 characters in production. Generate: node -e "console.log(require(\'crypto\').randomBytes(64).toString(\'hex\'))"');
+  }
+}
 const TOKEN_EXPIRY = '7d';
+const JWT_ALGORITHM = 'HS256' as const;
 
 export interface JwtPayload {
-  id?: string;
-  userId?: string;
+  userId: string;
   email: string;
   role: string;
 }
@@ -21,22 +29,12 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 export function generateToken(payload: JwtPayload): string {
-  const normalizedPayload = {
-    ...payload,
-    id: payload.id ?? payload.userId,
-    userId: payload.userId ?? payload.id,
-  };
-  return jwt.sign(normalizedPayload, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: TOKEN_EXPIRY, algorithm: JWT_ALGORITHM });
 }
 
 export function verifyToken(token: string): JwtPayload | null {
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
-    return {
-      ...payload,
-      id: payload.id ?? payload.userId,
-      userId: payload.userId ?? payload.id,
-    };
+    return jwt.verify(token, JWT_SECRET, { algorithms: [JWT_ALGORITHM] }) as JwtPayload;
   } catch {
     return null;
   }

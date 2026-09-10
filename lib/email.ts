@@ -139,7 +139,7 @@ export async function sendShippingNotification(
   }
 }
 
-export async function sendVerificationEmail(email: string, firstName: string, code: string) {
+export async function sendVerificationEmail(email: string, name: string, code: string) {
   const html = `
     <!DOCTYPE html>
     <html>
@@ -149,12 +149,14 @@ export async function sendVerificationEmail(email: string, firstName: string, co
         <div style="background:#0a0a0a;padding:30px;text-align:center">
           <h1 style="color:#fff;margin:0;font-size:24px;letter-spacing:4px">SEVENTHWEAR</h1>
         </div>
-        <div style="padding:30px">
-          <h2 style="color:#0a0a0a;margin-top:0">Hola, ${firstName}</h2>
-          <p style="color:#666">Gracias por registrarte en SEVENTHWEAR.</p>
-          <p style="color:#666">Tu código de verificación es:</p>
-          <div style="text-align:center;padding:18px 20px;border:1px solid #ddd;background:#fafafa;border-radius:8px;margin:20px 0;letter-spacing:4px;font-size:32px;font-weight:bold;color:#0a0a0a">${code}</div>
-          <p style="color:#666;margin:0">Este código expira en 15 minutos.</p>
+        <div style="padding:30px;text-align:center">
+          <h2 style="color:#0a0a0a;margin-top:0">Verifica tu email</h2>
+          <p style="color:#666;font-size:15px">Hola ${name}, usa este código para verificar tu cuenta:</p>
+          <div style="background:#f5f5f5;border-radius:8px;padding:20px;margin:24px 0;display:inline-block">
+            <span style="font-size:32px;font-weight:800;letter-spacing:8px;color:#0a0a0a;font-family:monospace">${code}</span>
+          </div>
+          <p style="color:#999;font-size:13px">Este código expira en 15 minutos.</p>
+          <p style="color:#999;font-size:13px">Si no creaste esta cuenta, ignora este email.</p>
         </div>
         <div style="background:#f5f5f5;padding:20px;text-align:center">
           <p style="margin:0;color:#999;font-size:12px">© 2026 SEVENTHWEAR. Todos los derechos reservados.</p>
@@ -168,32 +170,44 @@ export async function sendVerificationEmail(email: string, firstName: string, co
     await transporter.sendMail({
       from: process.env.EMAIL_FROM || 'SEVENTHWEAR <hello@seventhwear.com>',
       to: email,
-      subject: 'SEVENTHWEAR — Verifica tu email',
+      subject: 'SEVENTHWEAR — Código de verificación',
       html,
     });
     return { success: true };
   } catch (error) {
-    console.error('Verification email send error:', error);
+    console.error('Verification email error:', error);
     return { success: false, error };
   }
 }
 
-export async function sendBirthdayEmail(email: string, firstName: string, code: string, percent: number) {
+export async function sendBirthdayEmail(email: string, name: string, discountCode: string, discountPercent: number) {
   const html = `
     <!DOCTYPE html>
     <html>
     <head><meta charset="UTF-8"></head>
     <body style="font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px">
       <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">
-        <div style="background:#0a0a0a;padding:30px;text-align:center">
+        <div style="background:#0a0a0a;padding:40px 30px;text-align:center">
           <h1 style="color:#fff;margin:0;font-size:24px;letter-spacing:4px">SEVENTHWEAR</h1>
         </div>
-        <div style="padding:30px">
-          <h2 style="color:#0a0a0a;margin-top:0">¡Feliz cumpleaños, ${firstName}!</h2>
-          <p style="color:#666">Te hemos preparado un descuento especial del <strong>${percent}%</strong> en tu próxima compra.</p>
-          <p style="color:#666">Usa este código:</p>
-          <div style="text-align:center;padding:18px 20px;border:1px solid #ddd;background:#fafafa;border-radius:8px;margin:20px 0;letter-spacing:3px;font-size:28px;font-weight:bold;color:#0a0a0a">${code}</div>
-          <p style="color:#666;margin:0">Válido por 7 días.</p>
+        <div style="padding:40px 30px;text-align:center">
+          <div style="font-size:48px;margin-bottom:16px">🎂</div>
+          <h2 style="color:#0a0a0a;margin:0 0 8px;font-size:24px">¡Feliz cumpleaños, ${name}!</h2>
+          <p style="color:#666;font-size:15px;line-height:1.6;margin:16px 0">
+            Desde SEVENTHWEAR te deseamos un día increíble. Para celebrar contigo, 
+            te regalamos un <strong>${discountPercent}% de descuento</strong> en toda nuestra tienda.
+          </p>
+          <div style="background:#0a0a0a;border-radius:8px;padding:24px;margin:28px auto;display:inline-block;min-width:200px">
+            <p style="color:#999;font-size:11px;text-transform:uppercase;letter-spacing:2px;margin:0 0 8px">Tu código exclusivo</p>
+            <span style="font-size:28px;font-weight:800;letter-spacing:4px;color:#fff;font-family:monospace">${discountCode}</span>
+          </div>
+          <p style="color:#666;font-size:14px;margin:20px 0 0">
+            Válido por <strong>7 días</strong> desde hoy. ¡Disfruta tu regalo!
+          </p>
+          <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://seventhwear.com'}/shop" 
+             style="display:inline-block;margin-top:28px;padding:14px 40px;background:#0a0a0a;color:#fff;text-decoration:none;font-size:13px;text-transform:uppercase;letter-spacing:2px;border-radius:0">
+            Ir a la tienda
+          </a>
         </div>
         <div style="background:#f5f5f5;padding:20px;text-align:center">
           <p style="margin:0;color:#999;font-size:12px">© 2026 SEVENTHWEAR. Todos los derechos reservados.</p>
@@ -207,12 +221,12 @@ export async function sendBirthdayEmail(email: string, firstName: string, code: 
     await transporter.sendMail({
       from: process.env.EMAIL_FROM || 'SEVENTHWEAR <hello@seventhwear.com>',
       to: email,
-      subject: 'SEVENTHWEAR — Tu descuento de cumpleaños',
+      subject: `🎂 ¡Feliz cumpleaños, ${name}! Tu regalo de SEVENTHWEAR`,
       html,
     });
     return { success: true };
   } catch (error) {
-    console.error('Birthday email send error:', error);
+    console.error('Birthday email error:', error);
     return { success: false, error };
   }
 }

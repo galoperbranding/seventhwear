@@ -10,15 +10,10 @@ export async function GET() {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
-    const currentUserId = authUser.id ?? authUser.userId;
-    if (!currentUserId) {
-      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
-    }
-
     const db = getDb();
     const user = db.prepare(
       'SELECT id, email, first_name, last_name, phone, role, birth_date, created_at FROM users WHERE id = ?'
-    ).get(currentUserId) as {
+    ).get(authUser.userId) as {
       id: string; email: string; first_name: string;
       last_name: string; phone: string; role: string; birth_date: string | null; created_at: string;
     } | undefined;
@@ -48,11 +43,6 @@ export async function PATCH(request: NextRequest) {
   try {
     const authUser = await getAuthUser();
     if (!authUser) {
-      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
-    }
-
-    const currentUserId = authUser.id ?? authUser.userId;
-    if (!currentUserId) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
@@ -87,14 +77,14 @@ export async function PATCH(request: NextRequest) {
     }
 
     updates.push('updated_at = CURRENT_TIMESTAMP');
-    values.push(currentUserId);
+    values.push(authUser.userId);
 
     db.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`).run(...values);
 
     // Return updated user
     const user = db.prepare(
       'SELECT id, email, first_name, last_name, phone, role, birth_date, created_at FROM users WHERE id = ?'
-    ).get(currentUserId) as Record<string, unknown>;
+    ).get(authUser.userId) as Record<string, unknown>;
 
     return NextResponse.json({ user });
   } catch {

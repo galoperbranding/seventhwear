@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, FormEvent, useRef, Suspense } from 'react';
+import { useState, useEffect, FormEvent, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
@@ -8,14 +8,6 @@ import { useToast } from '@/context/ToastContext';
 type Step = 'email' | 'login' | 'register' | 'verify';
 
 export default function LoginPage() {
-  return (
-    <Suspense fallback={<div className="auth-page"><div className="auth-card">Cargando...</div></div>}>
-      <LoginPageContent />
-    </Suspense>
-  );
-}
-
-function LoginPageContent() {
   const [step, setStep] = useState<Step>('email');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

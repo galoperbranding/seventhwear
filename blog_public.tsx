@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import BlogGrid from './app/blog/BlogGrid';
+import BlogGrid from './BlogGrid';
 
 export const metadata: Metadata = {
   title: 'Blog — SEVENTHWEAR',
