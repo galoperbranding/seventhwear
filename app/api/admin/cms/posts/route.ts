@@ -24,7 +24,8 @@ export async function POST(req: NextRequest) {
   const id = randomUUID();
   const now = new Date().toISOString();
   const finalSlug = slug || slugify(title);
-  getDb().prepare(`INSERT INTO cms_posts (id, title, slug, excerpt, content, cover_image, status, author_id, published_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(id, title, finalSlug, excerpt || '', content || '', cover_image || '', status || 'draft', user.id, status === 'published' ? now : null, now, now);
+  const authorId = user.id ?? user.userId;
+  getDb().prepare(`INSERT INTO cms_posts (id, title, slug, excerpt, content, cover_image, status, author_id, published_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(id, title, finalSlug, excerpt || '', content || '', cover_image || '', status || 'draft', authorId, status === 'published' ? now : null, now, now);
   return NextResponse.json({ success: true, id });
 }
 
