@@ -7,17 +7,17 @@ const categories = [
   {
     name: 'Tees',
     slug: 'tees',
-    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=600&fit=crop',
+    image: '/img/tees_seventhwear.png',
   },
   {
     name: 'Hoodies',
     slug: 'hoodies',
-    image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&h=600&fit=crop',
+    image: '/img/hoodie_seventhwear.png',
   },
   {
     name: 'Pants',
     slug: 'pants',
-    image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&h=600&fit=crop',
+    image: '/img/pants_seventhwear.png',
   },
 ];
 

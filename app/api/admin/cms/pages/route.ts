@@ -17,3 +17,6 @@ export async function PUT(req: NextRequest) {
   getDb().prepare(`UPDATE cms_pages SET title=?, content=?, meta_description=?, updated_at=?, updated_by=? WHERE id=?`).run(title, content || '', meta_description || '', new Date().toISOString(), user.id, id);
   return NextResponse.json({ success: true });
 }
+
+
+
