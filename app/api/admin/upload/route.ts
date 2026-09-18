@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
+import { checkRateLimit, rateLimitResponse, getClientIp } from '@/lib/security';
 import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
@@ -12,6 +13,11 @@ export async function POST(request: NextRequest) {
     const user = await getAuthUser();
     if (!user || user.role !== 'admin') {
       return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
+    }
+
+    const limit = checkRateLimit('api', getClientIp(request));
+    if (!limit.allowed) {
+      return rateLimitResponse(limit.retryAfterMs);
     }
 
     const formData = await request.formData();

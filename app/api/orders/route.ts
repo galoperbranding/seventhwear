@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import getDb from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 import { createPayPalOrder } from '@/lib/paypal';
+import { checkRateLimit, rateLimitResponse, getClientIp } from '@/lib/security';
 import { v4 as uuidv4 } from 'uuid';
 
 function generateOrderNumber(): string {
@@ -13,6 +14,11 @@ function generateOrderNumber(): string {
 // Create order
 export async function POST(request: NextRequest) {
   try {
+    const limit = checkRateLimit('api', getClientIp(request));
+    if (!limit.allowed) {
+      return rateLimitResponse(limit.retryAfterMs);
+    }
+
     const body = await request.json();
     const { items, email, shippingAddress, billingAddress, notes } = body;
 
