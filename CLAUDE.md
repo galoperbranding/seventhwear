@@ -44,13 +44,19 @@ data/                   → SQLite database
 - **No sugerir ni usar Tailwind ni CSS Modules**
 
 ### Database
-- 8 tablas: `products`, `product_images`, `users`, `orders`, `order_items`, `newsletter_subscribers`, `sessions`, `cart_items`
+- 17 tablas:
+  - **Tienda**: `products`, `orders`, `order_items`, `cart_items`, `discount_codes`
+  - **Usuarios**: `users`, `sessions`, `addresses`, `newsletter_subscribers`
+  - **CRM**: `customer_notes`, `customer_tags`, `customer_tag_assignments`
+  - **CMS**: `cms_pages`, `cms_posts`, `cms_banners`, `cms_lookbook`
+  - **Auditoría**: `audit_log`
 - Usar `better-sqlite3` directo — **sin ORM**
 - Migraciones inline en `lib/db.ts`
 
 ### Auth
-- JWT en cookie `auth-token`
-- Admin protegido por verificación de rol en API routes
+- JWT en cookie `auth_token`
+- Admin protegido en dos capas: `middleware.ts` (runtime nodejs, verifica firma
+  del JWT y `role === 'admin'`) + verificación de rol en cada API route
 - Context `AuthContext` para estado client-side
 
 ## Rules — Lo que NUNCA debes hacer
@@ -65,7 +71,7 @@ data/                   → SQLite database
 ## Build & Dev
 ```bash
 npm run dev              # Dev server (Turbopack)
-npm run build            # Production build (33 routes)
+npm run build            # Production build
 npm run seed             # Seed DB (12 products + admin)
 npm run generate-secret  # Generate JWT secret
 ```
@@ -77,13 +83,16 @@ Copiar `.env.example` a `.env.local`. Variables requeridas:
 - `SMTP_*` para email
 - `DATABASE_PATH`
 
+Opcionales: `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` (login con Google),
+`CRON_SECRET` (tareas programadas), `NEXT_PUBLIC_BASE_URL`.
+
 ## Routes
 
 ### Pages
-`/` `/shop` `/producto/[slug]` `/checkout` `/checkout/success` `/brand` `/cuenta` `/login` `/registro` `/blog` `/lookbook` `/envios` `/devoluciones` `/guia-tallas` `/faq` `/privacidad` `/terminos` `/admin` `/admin/productos` `/admin/pedidos`
+`/` `/admin` `/admin/analytics` `/admin/clientes` `/admin/clientes/[id]` `/admin/cms` `/admin/cms/banners` `/admin/cms/blog` `/admin/cms/lookbook` `/admin/cms/paginas` `/admin/pedidos` `/admin/productos` `/blog` `/brand` `/checkout` `/checkout/success` `/cuenta` `/devoluciones` `/envios` `/faq` `/guia-tallas` `/login` `/lookbook` `/privacidad` `/producto/[slug]` `/registro` `/shop` `/terminos`
 
 ### API
-`/api/products` `/api/products/[slug]` `/api/orders` `/api/orders/capture` `/api/auth/login` `/api/auth/logout` `/api/auth/me` `/api/auth/register` `/api/newsletter` `/api/admin` `/api/admin/products` `/api/admin/orders` `/api/admin/upload`
+`/api/admin` `/api/admin/analytics` `/api/admin/birthdays` `/api/admin/cms/banners` `/api/admin/cms/lookbook` `/api/admin/cms/pages` `/api/admin/cms/posts` `/api/admin/customers` `/api/admin/customers/[id]` `/api/admin/customers/[id]/notes` `/api/admin/customers/[id]/tags` `/api/admin/customers/export` `/api/admin/orders` `/api/admin/products` `/api/admin/tags` `/api/admin/upload` `/api/auth/check-email` `/api/auth/google` `/api/auth/google/callback` `/api/auth/login` `/api/auth/logout` `/api/auth/me` `/api/auth/register` `/api/auth/verify` `/api/discount/validate` `/api/newsletter` `/api/orders` `/api/orders/capture` `/api/products` `/api/products/[slug]`
 
 ## Security
 - Headers de seguridad en `next.config.js` (HSTS, X-Frame-Options, etc.)
