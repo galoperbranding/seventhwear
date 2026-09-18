@@ -1,25 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyToken } from '@/lib/auth';
+
+// Runtime Node (no Edge) para poder verificar la firma del JWT con
+// jsonwebtoken, igual que el resto de la app.
+export const runtime = 'nodejs';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const isApi = pathname.startsWith('/api/admin');
 
-  // Protect all /admin routes (pages) — require auth_token cookie
-  if (pathname.startsWith('/admin')) {
-    const token = request.cookies.get('auth_token')?.value;
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-    // Note: Full JWT verification + role check happens server-side in the API/page.
-    // This middleware just prevents unauthenticated access to admin pages.
-  }
+  const deny = (status: number) =>
+    isApi
+      ? NextResponse.json({ error: 'No autorizado' }, { status })
+      : NextResponse.redirect(new URL('/login', request.url));
 
-  // Protect all /api/admin routes — require auth_token cookie  
-  if (pathname.startsWith('/api/admin')) {
-    const token = request.cookies.get('auth_token')?.value;
-    if (!token) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-    }
-  }
+  const token = request.cookies.get('auth_token')?.value;
+  if (!token) return deny(401);
+
+  // Verificar firma y rol aquí, no solo la presencia de la cookie: un token
+  // caducado, manipulado o de un usuario sin rol admin no debe pasar.
+  const user = verifyToken(token);
+  if (!user) return deny(401);
+  if (user.role !== 'admin') return deny(403);
 
   return NextResponse.next();
 }
