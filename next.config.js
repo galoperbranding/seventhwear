@@ -8,6 +8,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'www.seventhwear.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'shop.seventhwear.com',
+      },
     ],
   },
   poweredByHeader: false,
@@ -23,7 +27,7 @@ const nextConfig = {
         { key: 'X-Frame-Options', value: 'DENY' },
         { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
         { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-        { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.paypal.com https://www.sandbox.paypal.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://www.paypal.com https://www.sandbox.paypal.com https://lh3.googleusercontent.com; connect-src 'self' https://www.paypal.com https://www.sandbox.paypal.com https://api.sandbox.paypal.com https://api.paypal.com https://accounts.google.com; frame-src https://www.paypal.com https://www.sandbox.paypal.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self' https://www.paypal.com https://www.sandbox.paypal.com;" },
+        { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.paypal.com https://www.sandbox.paypal.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://shop.seventhwear.com https://www.seventhwear.com https://www.paypal.com https://www.sandbox.paypal.com https://lh3.googleusercontent.com; connect-src 'self' https://www.paypal.com https://www.sandbox.paypal.com https://api.sandbox.paypal.com https://api.paypal.com https://accounts.google.com; frame-src https://www.paypal.com https://www.sandbox.paypal.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self' https://www.paypal.com https://www.sandbox.paypal.com;" },
       ],
     },
     {
