@@ -71,3 +71,8 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Archivos fuente de diseño (PSD, originales sin optimizar).
+# Se conservan en local para tener referencia, pero no se versionan
+# ni se despliegan: no los usa la web.
+design-assets/
