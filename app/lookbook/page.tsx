@@ -22,13 +22,13 @@ export default function LookbookPage() {
           </h2>
           <div className="reveal-stagger-scale" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '4px' }}>
             <div style={{ aspectRatio: '3/4', background: 'var(--color-bg-secondary)', overflow: 'hidden' }}>
-              <img src="/img/seventhwear_1.jpg" alt="Street Collection 1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+              <img src="/img/seventhwear_1.webp" alt="Street Collection 1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
             </div>
             <div style={{ aspectRatio: '3/4', background: 'var(--color-bg-secondary)', overflow: 'hidden' }}>
-              <img src="/img/seventhwear_2.jpg" alt="Street Collection 2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+              <img src="/img/seventhwear_2.webp" alt="Street Collection 2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
             </div>
             <div style={{ aspectRatio: '3/4', background: 'var(--color-bg-secondary)', overflow: 'hidden' }}>
-              <img src="/img/seventhwear_3.jpg" alt="Street Collection 3" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+              <img src="/img/seventhwear_3.webp" alt="Street Collection 3" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
             </div>
           </div>
           <div style={{ textAlign: 'center', marginTop: '2rem' }}>
@@ -43,10 +43,10 @@ export default function LookbookPage() {
           </h2>
           <div className="reveal-stagger-scale" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
             <div style={{ aspectRatio: '3/4', background: 'var(--color-bg-secondary)', overflow: 'hidden' }}>
-              <img src="/img/seventhwear_4.jpg" alt="Ride Collection 1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+              <img src="/img/seventhwear_4.webp" alt="Ride Collection 1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
             </div>
             <div style={{ aspectRatio: '3/4', background: 'var(--color-bg-secondary)', overflow: 'hidden' }}>
-              <img src="/img/seventhwear_5.jpg" alt="Ride Collection 2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+              <img src="/img/seventhwear_5.webp" alt="Ride Collection 2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
             </div>
           </div>
           <div style={{ textAlign: 'center', marginTop: '2rem' }}>
@@ -61,10 +61,10 @@ export default function LookbookPage() {
           </h2>
           <div className="reveal-stagger-scale" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '4px' }}>
             <div style={{ aspectRatio: '16/9', background: 'var(--color-bg-secondary)', overflow: 'hidden' }}>
-              <img src="/img/seventhwear_brand_2.jpg" alt="Essentials 1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+              <img src="/img/seventhwear_brand_2.webp" alt="Essentials 1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
             </div>
             <div style={{ aspectRatio: '9/16', background: 'var(--color-bg-secondary)', overflow: 'hidden' }}>
-              <img src="/img/seventhwear_brand_3.jpg" alt="Essentials 2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+              <img src="/img/seventhwear_brand_3.webp" alt="Essentials 2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
             </div>
           </div>
           <div style={{ textAlign: 'center', marginTop: '2rem' }}>

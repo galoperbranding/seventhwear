@@ -7,17 +7,17 @@ const categories = [
   {
     name: 'Tees',
     slug: 'tees',
-    image: '/img/tees_seventhwear.png',
+    image: '/img/tees_seventhwear.webp',
   },
   {
     name: 'Hoodies',
     slug: 'hoodies',
-    image: '/img/hoodie_seventhwear.png',
+    image: '/img/hoodie_seventhwear.webp',
   },
   {
     name: 'Pants',
     slug: 'pants',
-    image: '/img/pants_seventhwear.png',
+    image: '/img/pants_seventhwear.webp',
   },
 ];
 

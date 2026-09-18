@@ -32,7 +32,7 @@ export default function BrandPage() {
               <p>Creamos ropa que funciona en ambos terrenos — diseños que respiran autenticidad callejera con la funcionalidad técnica que demanda el riding. Cada pieza está pensada para resistir, para moverte y para expresar quién eres.</p>
             </div>
             <div className="about-image">
-              <img src="/img/seventhwear_brand_2.jpg" alt="Streetwear lifestyle" loading="lazy" />
+              <img src="/img/seventhwear_brand_2.webp" alt="Streetwear lifestyle" loading="lazy" />
             </div>
           </div>
 
@@ -44,7 +44,7 @@ export default function BrandPage() {
               <p>Usamos algodones orgánicos pesados, tejidos técnicos y acabados premium. No seguimos tendencias — creamos las nuestras. SEVENTHWEAR es más que ropa: es una actitud.</p>
             </div>
             <div className="about-image">
-              <img src="/img/seventhwear_brand_3.jpg" alt="Ride lifestyle" loading="lazy" />
+              <img src="/img/seventhwear_brand_3.webp" alt="Ride lifestyle" loading="lazy" />
             </div>
           </div>
 
@@ -57,7 +57,7 @@ export default function BrandPage() {
               <p>Creemos que la moda puede ser consciente sin sacrificar el estilo ni la funcionalidad.</p>
             </div>
             <div className="about-image">
-              <img src="/img/seventhwear_brand_4.jpg" alt="Quality details" loading="lazy" />
+              <img src="/img/seventhwear_brand_4.webp" alt="Quality details" loading="lazy" />
             </div>
           </div>
 
@@ -85,7 +85,7 @@ export default function BrandPage() {
       {/* CTA Banner */}
       <section className="featured-banner reveal-scale">
         <div className="featured-banner-bg">
-          <img src="/img/seventhwear_brand_5.jpg" alt="Explore collection" loading="lazy" />
+          <img src="/img/seventhwear_brand_5.webp" alt="Explore collection" loading="lazy" />
         </div>
         <div className="featured-banner-overlay"></div>
         <div className="featured-banner-content reveal-left">

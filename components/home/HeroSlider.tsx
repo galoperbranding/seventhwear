@@ -3,11 +3,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
 const slides = [
-  { src: '/img/seventhwear_1.jpg', alt: 'SEVENTHWEAR Hero' },
-  { src: '/img/seventhwear_2.jpg', alt: 'Ride Collection' },
-  { src: '/img/seventhwear_3.jpg', alt: 'Street Collection' },
-  { src: '/img/seventhwear_4.jpg', alt: 'SEVENTHWEAR Lifestyle' },
-  { src: '/img/seventhwear_5.jpg', alt: 'SEVENTHWEAR Ridewear' },
+  { src: '/img/seventhwear_1.webp', alt: 'SEVENTHWEAR Hero' },
+  { src: '/img/seventhwear_2.webp', alt: 'Ride Collection' },
+  { src: '/img/seventhwear_3.webp', alt: 'Street Collection' },
+  { src: '/img/seventhwear_4.webp', alt: 'SEVENTHWEAR Lifestyle' },
+  { src: '/img/seventhwear_5.webp', alt: 'SEVENTHWEAR Ridewear' },
 ];
 
 const SLIDE_DURATION = 6000;
